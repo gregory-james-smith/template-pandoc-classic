@@ -1,0 +1,953 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode$for(hyperrefoptions)$,$hyperrefoptions$$endfor$}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+$if(colorlinks)$
+\PassOptionsToPackage{dvipsnames,svgnames,x11names}{xcolor}
+$endif$
+$if(CJKmainfont)$
+\PassOptionsToPackage{space}{xeCJK}
+$endif$
+
+% ********************************************************************
+% Document class
+% ********************************************************************
+\documentclass[
+  %
+  % Typography
+  fontsize=11pt,% TODO -- decide on font size
+  %
+  % Language
+  UKenglish,
+  %
+  % Page layout
+  paper=a4,
+  twoside,
+  openright,
+  headinclude,% Header is considered part of the text when calculating margins
+  footinclude,% Footer is considered part of the text when calculating margins
+  BCOR=0mm,% Binding correction i.e. the width of the area lost from the paper during the binding process
+  cleardoublepage=empty,% Cleared pages are empty - no headers or footers
+  usegeometry,% Compatibility with geometry package
+  %
+  % Other options
+  numbers=noenddot,% No dots after chapter or section numbers
+]{scrbook}
+
+% ********************************************************************
+% Geometry
+% ********************************************************************
+\usepackage[a4paper]{geometry}
+
+% --------------------------------------------------------------------
+% evenmargins
+% --------------------------------------------------------------------
+% Environment for setting margins evenly on a single page so that the
+% left and right margins are equal without affecting the top and
+% bottom margins.
+% --------------------------------------------------------------------
+\newenvironment{evenmargins}[1][1cm]
+    {\newgeometry{left=#1, right=#1, top=2.5cm, bottom=3.5cm}}
+    {\restoregeometry}
+
+% --------------------------------------------------------------------
+% centertextmargins
+% --------------------------------------------------------------------
+% Environment for setting margins evenly on a single page so that the
+% left and right margins are equal, without affecting the top and
+% bottom margins, and maintaining the text area width.
+% --------------------------------------------------------------------
+\newenvironment{centertextmargins}
+    {\newgeometry{left=0.2\paperwidth, right=0.2\paperwidth, top=2.5cm, bottom=3.5cm}}
+    {\restoregeometry}
+
+% --------------------------------------------------------------------
+% squaremargins
+% --------------------------------------------------------------------
+% Environment for setting margins evenly on a single page so that top,
+% bottom, left and right margins are all equal.
+% --------------------------------------------------------------------
+\newenvironment{squaremargins}
+    {\newgeometry{left=1cm, right=1cm, top=1cm, bottom=1cm}}
+    {\restoregeometry}
+
+% ********************************************************************
+% Packages
+% ********************************************************************
+
+\usepackage{amsmath,amssymb}
+
+$if(fontfamily)$
+\usepackage[$for(fontfamilyoptions)$$fontfamilyoptions$$sep$,$endfor$]{$fontfamily$}
+$else$
+\usepackage{lmodern}
+$endif$
+
+$if(linestretch)$
+\usepackage{setspace}
+$endif$
+
+\usepackage{iftex}
+
+% --------------------------------------------------------------------
+% EB Garamond
+% --------------------------------------------------------------------
+% TODO -- better to use setmainfont...
+\usepackage{ebgaramond}
+\usepackage{ebgaramond-maths}
+
+% --------------------------------------------------------------------
+% Font settings
+% --------------------------------------------------------------------
+% TODO -- organise and simplify
+% --------------------------------------------------------------------
+
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+
+$if(mathspec)$
+  \ifXeTeX
+    \usepackage{mathspec}
+  \else
+    \usepackage{unicode-math}
+  \fi
+$else$
+  \usepackage{unicode-math}
+$endif$
+
+\defaultfontfeatures{Scale=MatchLowercase}
+\defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+
+$if(mainfont)$
+  \setmainfont[$for(mainfontoptions)$$mainfontoptions$$sep$,$endfor$]{$mainfont$}
+$endif$
+
+$if(sansfont)$
+  \setsansfont[$for(sansfontoptions)$$sansfontoptions$$sep$,$endfor$]{$sansfont$}
+$endif$
+
+$if(monofont)$
+  \setmonofont[$for(monofontoptions)$$monofontoptions$$sep$,$endfor$]{$monofont$}
+$endif$
+
+$for(fontfamilies)$
+  \newfontfamily{$fontfamilies.name$}[$for(fontfamilies.options)$$fontfamilies.options$$sep$,$endfor$]{$fontfamilies.font$}
+$endfor$
+
+$if(mathfont)$
+$if(mathspec)$
+  \ifXeTeX
+    \setmathfont(Digits,Latin,Greek)[$for(mathfontoptions)$$mathfontoptions$$sep$,$endfor$]{$mathfont$}
+  \else
+    \setmathfont[$for(mathfontoptions)$$mathfontoptions$$sep$,$endfor$]{$mathfont$}
+  \fi
+$else$
+  \setmathfont[$for(mathfontoptions)$$mathfontoptions$$sep$,$endfor$]{$mathfont$}
+$endif$
+$endif$
+
+$if(CJKmainfont)$
+  \ifXeTeX
+    \usepackage{xeCJK}
+    \setCJKmainfont[$for(CJKoptions)$$CJKoptions$$sep$,$endfor$]{$CJKmainfont$}
+  \fi
+$endif$
+
+$if(luatexjapresetoptions)$
+  \ifLuaTeX
+    \usepackage[$for(luatexjapresetoptions)$$luatexjapresetoptions$$sep$,$endfor$]{luatexja-preset}
+  \fi
+$endif$
+
+$if(CJKmainfont)$
+  \ifLuaTeX
+    \usepackage[$for(luatexjafontspecoptions)$$luatexjafontspecoptions$$sep$,$endfor$]{luatexja-fontspec}
+    \setmainjfont[$for(CJKoptions)$$CJKoptions$$sep$,$endfor$]{$CJKmainfont$}
+  \fi
+$endif$
+
+\fi
+
+% --------------------------------------------------------------------
+% Zero-width non-joiner characters
+% --------------------------------------------------------------------
+% TODO -- is this needed?
+% --------------------------------------------------------------------
+
+$if(zero-width-non-joiner)$
+%% Support for zero-width non-joiner characters.
+\makeatletter
+\def\zerowidthnonjoiner{%
+  % Prevent ligatures and adjust kerning, but still support hyphenating.
+  \texorpdfstring{%
+    \TextOrMath{\nobreak\discretionary{-}{}{\kern.03em}%
+      \ifvmode\else\nobreak\hskip\z@skip\fi}{}%
+  }{}%
+}
+\makeatother
+\ifPDFTeX
+  \DeclareUnicodeCharacter{200C}{\zerowidthnonjoiner}
+\else
+  \catcode`^^^^200c=\active
+  \protected\def ^^^^200c{\zerowidthnonjoiner}
+\fi
+%% End of ZWNJ support
+$endif$
+
+% --------------------------------------------------------------------
+% Typography settings
+% --------------------------------------------------------------------
+
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[$for(microtypeoptions)$$microtypeoptions$$sep$,$endfor$]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+
+$if(indent)$
+$else$
+% KOMA class
+\KOMAoptions{parskip=half}
+$endif$
+
+% --------------------------------------------------------------------
+% X color
+% --------------------------------------------------------------------
+
+\usepackage[dvipsnames,svgnames,x11names]{xcolor}
+
+% --------------------------------------------------------------------
+% Verbatim
+% --------------------------------------------------------------------
+
+$if(listings)$
+\usepackage{listings}
+\newcommand{\passthrough}[1]{#1}
+\lstset{defaultdialect=[5.3]Lua}
+\lstset{defaultdialect=[x86masm]Assembler}
+$endif$
+
+$if(lhs)$
+\lstnewenvironment{code}{\lstset{language=Haskell,basicstyle=\small\ttfamily}}{}
+$endif$
+
+$if(highlighting-macros)$
+$highlighting-macros$
+$endif$
+
+$if(verbatim-in-note)$
+\VerbatimFootnotes % allow verbatim text in footnotes
+$endif$
+
+$if(verbatim-in-note)$
+\usepackage{fancyvrb}
+$endif$
+
+% --------------------------------------------------------------------
+% Tables
+% --------------------------------------------------------------------
+
+$if(tables)$
+\usepackage{longtable,booktabs,array}
+$if(multirow)$
+\usepackage{multirow}
+$endif$
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+$endif$
+
+% --------------------------------------------------------------------
+% Graphics X
+% --------------------------------------------------------------------
+
+$if(graphics)$
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+$endif$
+
+% TODO -- what does this do?
+% $if(strikeout)$
+% $-- also used for underline
+% \usepackage[normalem]{ulem}
+% $endif$
+
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+
+$if(block-headings)$
+% Make \paragraph and \subparagraph free-standing
+\ifx\paragraph\undefined\else
+  \let\oldparagraph\paragraph
+  \renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+  \let\oldsubparagraph\subparagraph
+  \renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+$endif$
+
+$if(csl-refs)$
+\newlength{\cslhangindent}
+\setlength{\cslhangindent}{1.5em}
+\newlength{\csllabelwidth}
+\setlength{\csllabelwidth}{3em}
+\newlength{\cslentryspacingunit} % times entry-spacing
+\setlength{\cslentryspacingunit}{\parskip}
+\newenvironment{CSLReferences}[2] % #1 hanging-ident, #2 entry spacing
+ {% don't indent paragraphs
+  \setlength{\parindent}{0pt}
+  % turn on hanging indent if param 1 is 1
+  \ifodd #1
+  \let\oldpar\par
+  \def\par{\hangindent=\cslhangindent\oldpar}
+  \fi
+  % set entry spacing
+  \setlength{\parskip}{#2\cslentryspacingunit}
+ }%
+ {}
+\usepackage{calc}
+\newcommand{\CSLBlock}[1]{#1\hfill\break}
+\newcommand{\CSLLeftMargin}[1]{\parbox[t]{\csllabelwidth}{#1}}
+\newcommand{\CSLRightInline}[1]{\parbox[t]{\linewidth - \csllabelwidth}{#1}\break}
+\newcommand{\CSLIndent}[1]{\hspace{\cslhangindent}#1}
+$endif$
+$if(lang)$
+\ifLuaTeX
+\usepackage[bidi=basic]{babel}
+\else
+\usepackage[bidi=default]{babel}
+\fi
+$if(babel-lang)$
+\babelprovide[main,import]{$babel-lang$}
+$endif$
+$for(babel-otherlangs)$
+\babelprovide[import]{$babel-otherlangs$}
+$endfor$
+% get rid of language-specific shorthands (see #6817):
+\let\LanguageShortHands\languageshorthands
+\def\languageshorthands#1{}
+$endif$
+$for(header-includes)$
+$header-includes$
+$endfor$
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+$if(dir)$
+\ifPDFTeX
+  \TeXXeTstate=1
+  \newcommand{\RL}[1]{\beginR #1\endR}
+  \newcommand{\LR}[1]{\beginL #1\endL}
+  \newenvironment{RTL}{\beginR}{\endR}
+  \newenvironment{LTR}{\beginL}{\endL}
+\fi
+$endif$
+$if(natbib)$
+\usepackage[$natbiboptions$]{natbib}
+\bibliographystyle{$if(biblio-style)$$biblio-style$$else$plainnat$endif$}
+$endif$
+$if(biblatex)$
+\usepackage[$if(biblio-style)$style=$biblio-style$,$endif$$for(biblatexoptions)$$biblatexoptions$$sep$,$endfor$]{biblatex}
+$for(bibliography)$
+\addbibresource{$bibliography$}
+$endfor$
+$endif$
+$if(nocite-ids)$
+\nocite{$for(nocite-ids)$$it$$sep$, $endfor$}
+$endif$
+$if(csquotes)$
+\usepackage{csquotes}
+$endif$
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same} % disable monospaced font for URLs
+
+$if(links-as-notes)$
+% Make links footnotes instead of hotlinks:
+\DeclareRobustCommand{\href}[2]{#2\footnote{\url{#1}}}
+$endif$
+
+% ********************************************************************
+% Headings and heading pages
+% ********************************************************************
+
+% Heading numbering
+\setcounter{secnumdepth}{2}
+
+% Heading font
+\setkomafont{disposition}{\rmfamily}
+
+% --------------------------------------------------------------------
+% Part
+% --------------------------------------------------------------------
+% Renew part command to handle different implementations of part command
+% 
+% \part{title}
+% \part*{title}
+% \part[toc-title]{title} % toc-title set to title if missing
+% 
+% https://tex.stackexchange.com/questions/4386/defining-starred-versions-of-commands-macro
+% https://tex.stackexchange.com/questions/47351/can-i-redefine-a-command-to-contain-itself
+% 
+% See page 493 KOMA manual
+% --------------------------------------------------------------------
+
+\RedeclareSectionCommand[
+  innerskip=11pt,
+  font=\scshape\Large,
+  prefixfont=\Large,
+]{part}
+
+% TODO -- sort out spacing and kerning for MakeUppercase
+% TODO -- abstract Maroon colour
+
+\renewcommand*{\partlineswithprefixformat}[3]{%
+  \parbox{.75\linewidth}{\raggedpart #2}%
+  \par%
+  \parbox{.75\linewidth}{\raggedpart \color{Maroon} \MakeUppercase{#3}}%
+  \par%
+}
+
+\renewcommand*\raggedpart{\centering}
+
+% TODO -- can this be done with a pagestyle in RedeclareSectionCommand
+\NewCommandCopy{\oldpart}{\part}
+\renewcommand{\part}[1]{
+  \begin{centertextmargins}
+    \oldpart{#1}
+  \end{centertextmargins}
+}
+
+% --------------------------------------------------------------------
+% Chapter
+% --------------------------------------------------------------------
+
+\RedeclareSectionCommand[
+  font=\scshape,
+]{chapter}
+
+\renewcommand{\chapterlinesformat}[3]{%
+  \raggedchapter%
+  \MakeUppercase{#3}%
+}
+
+% TODO -- replace MakeUppercase with command which also adds spacing and kerning
+%
+% \ifthenelse{\boolean{pdf}\OR\boolean{luatex}}{ % pdf will soon test true for both pdflatex and luatex; \AND\NOT\boolean{luatex}
+% \PackageInfo{classicthesis}{Using microtype for character spacing.%
+%                             Make sure your pdflatex is version 1.40 or higher.}%
+% % \microtypesetup{expansion=false}
+% \microtypesetup{protrusion=true,expansion=true}
+% \DeclareRobustCommand{\spacedallcaps}[1]{\textls[160]{\ct@caps\MakeTextUppercase{#1}}}
+% \DeclareRobustCommand{\spacedlowsmallcaps}[1]{\textls[80]{\ct@caps\MakeTextLowercase{#1}}}
+% }{\relax}
+%
+% \ifthenelse{\boolean{xetex}}{ % use fontspec features; \OR\boolean{luatex} does not work well
+% \PackageInfo{classicthesis}{Using fontspec for character spacing.}%
+% \microtypesetup{expansion=false}
+
+
+
+% \DeclareRobustCommand{\spacedallcaps}[1]{{\addfontfeature{LetterSpace=18.0}\ct@caps\MakeTextUppercase{#1}}}% WordSpace=1.8
+% \DeclareRobustCommand{\spacedlowsmallcaps}[1]{{\addfontfeatures{LetterSpace=14.0}\ct@caps\MakeTextLowercase{#1}}}% WordSpace=1.8
+
+% % WordSpace=1.8
+% \DeclareRobustCommand{\spacedallcaps}[1]{{\addfontfeature{LetterSpace=18.0}\ct@caps\MakeTextUppercase{#1}}}
+% \DeclareRobustCommand{\spacedsmallcaps}[1]{{\addfontfeatures{LetterSpace=14.0}\ct@caps\MakeTextLowercase{#1}}}
+
+% TODO -- add chapter number into outer margin
+
+\renewcommand{\chapterheadendvskip}{%
+  \begingroup
+    \raggedchapter
+    \rule{\textwidth}{.5pt}\par%
+    \vspace*{0.6\baselineskip}%
+  \endgroup
+}
+
+% TODO -- classicthesis implementation, delete this
+%
+% % chapters
+% \ifthenelse{\boolean{@linedheaders}}%
+% {% lines above and below, number right
+% \titleformat{\chapter}[display]%             
+%     {\relax}{\raggedleft{\chapterNumber\thechapter} \\ }{0pt}%
+%     {\titlerule\vspace*{.9\baselineskip}\raggedright\spacedallcaps}[\normalsize\vspace*{.8\baselineskip}\titlerule]%
+% }{% something like Bringhurst  
+% \titleformat{\chapter}[display]%
+%     {\relax}{\mbox{}\oldmarginpar{\vspace*{-3\baselineskip}\chapterNumber\thechapter}}{0pt}%
+%     {\raggedright\spacedallcaps}[\normalsize\vspace*{.8\baselineskip}\titlerule]% 
+% }
+
+% --------------------------------------------------------------------
+% Section
+% --------------------------------------------------------------------
+
+\makeatletter
+\renewcommand{\sectionlinesformat}[4]{%
+  \@tempswafalse
+  \Ifstr{#1}{section}{%
+    \@hangfrom{\hskip #2#3}{\MakeLowercase{#4}}%
+  }{
+    \Ifstr{#1}{subsection}{%
+      \@hangfrom{\hskip #2#3}{#4}%
+    }{% Sub-sub-section
+      \@hangfrom{\hskip #2#3}{#4}%
+    }
+  }
+}
+\makeatother
+
+\RedeclareSectionCommand[
+  font=\scshape\normalsize,
+]{section}
+
+% Number format
+% Must be lowercase because appendixes can have letters
+\renewcommand*{\sectionformat}{\MakeLowercase{\thesection\enskip}}
+
+% --------------------------------------------------------------------
+% Sub-section
+% --------------------------------------------------------------------
+
+\RedeclareSectionCommand[
+  font=\itshape\normalsize,
+]{subsection}
+
+% Number format
+% Must be lowercase because appendixes can have letters
+\renewcommand*{\subsectionformat}{\upshape\scshape\MakeLowercase{\thesubsection\enskip}}
+
+% --------------------------------------------------------------------
+% Sub-sub-section
+% --------------------------------------------------------------------
+
+% TODO -- have a think about subsubsection headings -- should they be numbered? how formatted?
+
+\RedeclareSectionCommand[
+  font=\itshape\normalsize,
+]{subsubsection}
+
+% --------------------------------------------------------------------
+% Paragraph
+% --------------------------------------------------------------------
+
+\makeatletter
+\renewcommand{\sectioncatchphraseformat}[4]{%
+  \@tempswafalse
+  \Ifstr{#1}{paragraph}{%
+    \MakeLowercase{#4}%
+  }{% Sub-paragraph
+    #4%
+  }
+}
+\makeatother
+
+\RedeclareSectionCommand[
+  font=\scshape\normalsize,
+]{paragraph}
+
+% --------------------------------------------------------------------
+% Sub-paragraph
+% --------------------------------------------------------------------
+% This level is not reachable from Pandoc Markdown files where the top
+% level is part.
+% --------------------------------------------------------------------
+
+\RedeclareSectionCommand[
+  font=\itshape\normalsize,
+]{subparagraph}
+
+% ********************************************************************
+% Pages
+% ********************************************************************
+
+% --------------------------------------------------------------------
+% Headers and footers
+% --------------------------------------------------------------------
+
+% Remove numbers from headers
+\renewcommand*{\chaptermarkformat}{}
+\renewcommand*{\sectionmarkformat}{}
+
+% Set headers to always be lowercase smallcaps
+\usepackage[markcase=lower]{scrlayer-scrpage}
+\setkomafont{pageheadfoot}{\scshape}
+
+\lehead{{\small\thepage\kern2em}\headmark\hfill}
+\rohead{\hfill{\headmark}{\small\kern2em\thepage}}
+% TODO -- sort out sizing of the headers
+% \lehead{\thepage\kern2em\headmark\hfill}
+% \rohead{\hfill\headmark\kern2em\thepage}
+
+\lefoot*{}
+\rofoot*{}
+
+% --------------------------------------------------------------------
+% Interleaf pages
+% --------------------------------------------------------------------
+% Adds custom page style to blank pages added when cleardoublepage and
+% similar commands are used. A Victorian ornament is added to indicate
+% that the pages are intentionally blank.
+% --------------------------------------------------------------------
+\usepackage{pgfornament}
+
+\newcommand{\interleafcontent}{
+  \vfill
+  \begin{center}
+    \ifthispageodd{
+      \pgfornament[width = 1cm, color = Maroon, symmetry=c]{19}
+    }{
+      \pgfornament[width = 1cm, color = Maroon]{19}
+    }
+  \end{center}
+  \vfill
+}
+
+\DeclareNewLayer[contents=\interleafcontent,align=c,page]{interleaflayer}
+
+\DeclarePageStyleByLayers{interleaf}{interleaflayer}
+
+\KOMAoptions{cleardoublepage=interleaf}
+
+% --------------------------------------------------------------------
+% Hyperreferences
+% --------------------------------------------------------------------
+% References and citations
+% Must be declared last
+% --------------------------------------------------------------------
+\hypersetup{
+$if(title-meta)$
+  pdftitle={$title-meta$},
+$endif$
+$if(author-meta)$
+  pdfauthor={$author-meta$},
+$endif$
+$if(lang)$
+  pdflang={$lang$},
+$endif$
+$if(subject)$
+  pdfsubject={$subject$},
+$endif$
+$if(keywords)$
+  pdfkeywords={$for(keywords)$$keywords$$sep$, $endfor$},
+$endif$
+$if(colorlinks)$
+  colorlinks=true,
+  linkcolor={$if(linkcolor)$$linkcolor$$else$Maroon$endif$},
+  filecolor={$if(filecolor)$$filecolor$$else$Maroon$endif$},
+  citecolor={$if(citecolor)$$citecolor$$else$Blue$endif$},
+  urlcolor={$if(urlcolor)$$urlcolor$$else$Blue$endif$},
+$else$
+$if(boxlinks)$
+$else$
+  hidelinks,
+$endif$
+$endif$
+  pdfcreator={LaTeX via pandoc}
+}
+
+% --------------------------------------------------------------------
+% Title defiition
+% --------------------------------------------------------------------
+$if(title)$
+\title{$title$$if(thanks)$\thanks{$thanks$}$endif$}
+$endif$
+$if(subtitle)$
+\usepackage{etoolbox}
+\makeatletter
+\providecommand{\subtitle}[1]{% add subtitle to \maketitle
+  \apptocmd{\@title}{\par {\large #1 \par}}{}{}
+}
+\makeatother
+\subtitle{$subtitle$}
+$endif$
+\author{$for(author)$$author$$sep$ \and $endfor$}
+\date{$date$}
+
+% ********************************************************************
+% Start document
+% ********************************************************************
+\begin{document}
+
+\frenchspacing
+\raggedbottom
+
+% ********************************************************************
+% Front matter
+% ********************************************************************
+\pagenumbering{roman}
+\pagestyle{plain}
+
+$if(has-frontmatter)$
+\frontmatter
+$endif$
+
+% --------------------------------------------------------------------
+% Title & abstract
+% --------------------------------------------------------------------
+
+% TODO -- where does abstract go?
+% 
+% $if(title)$
+% \maketitle
+% $if(abstract)$
+% \begin{abstract}
+% $abstract$
+% \end{abstract}
+% $endif$
+% $endif$
+
+% ********************************************************************
+% Title pages
+% ********************************************************************
+
+\begin{titlepage}
+
+  % --------------------------------------------------------------------
+  % Bastard title
+  % --------------------------------------------------------------------
+
+  \begin{centertextmargins}
+    \begin{center}
+      \scshape\MakeLowercase{$for(author)$$author$$sep$\,â€¢\,$endfor$} \\ \medskip
+      \begingroup
+        \color{Maroon}\scshape\MakeUppercase{$title$}
+      \endgroup
+    \end{center}
+  \end{centertextmargins}
+
+  % TODO -- fix separation bullet point
+  % TODO -- change font style using another KOMA command?
+  % TODO -- replace command for lowercase and uppercase small caps
+
+  % --------------------------------------------------------------------
+  % Frontispiece
+  % --------------------------------------------------------------------
+  $if(frontispiece)$
+    \clearpage
+    \begin{squaremargins}
+      \vspace*{\fill}
+      \begin{center}
+        \includegraphics[width=\textwidth]{$frontispiece$}
+      \end{center}
+      \vspace*{\fill}
+    \end{squaremargins}
+  $else$
+    \cleardoubleoddpage
+  $endif$
+
+  % TODO -- fix issue of double interleaf ornaments
+
+  % --------------------------------------------------------------------
+  % Title page
+  % --------------------------------------------------------------------
+  \clearpage
+
+  \begin{centertextmargins}
+    \begin{center}
+      \large
+      \hfill
+      \vfill
+
+      \begingroup
+        \color{Maroon}\scshape\MakeUppercase{$title$} \\ \bigskip
+      \endgroup
+
+      \begingroup
+        \scshape\MakeLowercase{$for(author)$$author$$sep$\,â€¢\,$endfor$}
+      \endgroup
+
+      \vfill
+
+      % TODO -- add image to title page
+      % 
+    % \includegraphics[width=6cm]{gfx/TFZsuperellipse_bw} \\ \medskip
+
+      $subtitle$ \\ \medskip
+
+      % TODO -- sort out other filed like date etc.
+%     %\myDegree \\
+%     %\myDepartment \\
+%     %\myFaculty \\
+%     %\myUni \\ \bigskip
+%     \myTime\ -- \myVersion
+
+      \vfill
+    \end{center}
+  \end{centertextmargins}
+
+  % TODO -- tidy up title page
+  % TODO -- setup links and bookmarks %\pdfbookmark[1]{\myTitle}{titlepage}
+
+\end{titlepage}
+
+% TODO -- add colophon
+
+% --------------------------------------------------------------------
+% Tables of contents
+% --------------------------------------------------------------------
+$if(toc)$
+$if(toc-title)$
+\renewcommand*\contentsname{$toc-title$}
+$endif$
+$if(beamer)$
+\begin{frame}[allowframebreaks]
+$if(toc-title)$
+  \frametitle{$toc-title$}
+$endif$
+  \tableofcontents[hideallsubsections]
+\end{frame}
+$else$
+{
+$if(colorlinks)$
+\hypersetup{linkcolor=$if(toccolor)$$toccolor$$else$$endif$}
+$endif$
+\setcounter{tocdepth}{$toc-depth$}
+\tableofcontents
+}
+$endif$
+$endif$
+
+$if(lof)$
+\listoffigures
+$endif$
+
+$if(lot)$
+\listoftables
+$endif$
+
+$if(linestretch)$
+\setstretch{$linestretch$}
+$endif$
+
+% --------------------------------------------------------------------
+% Front matter
+% --------------------------------------------------------------------
+% Epigraph
+% Foreward, preface
+% Acknowledgements, dedication
+% --------------------------------------------------------------------
+$for(include-before)$
+$include-before$
+$endfor$
+
+% ********************************************************************
+% Main matter
+% ********************************************************************
+\cleardoublepage
+\pagenumbering{arabic}
+\pagestyle{scrheadings}
+
+$if(has-frontmatter)$
+\mainmatter
+$endif$
+$body$
+
+
+% ----------------------------------
+% TODO -- test code, remove this
+\cleardoubleoddpage
+stuff
+\cleardoubleoddpage
+\cleardoubleevenpage
+stuff
+% ----------------------------------
+
+% ********************************************************************
+% Appendix
+% ********************************************************************
+% Chapters in 'include-after' are taken as appendixes
+% ********************************************************************
+$if(include-after)$
+\appendix
+\part{Appendix}
+$for(include-after)$
+$include-after$
+$endfor$
+$endif$
+
+% ********************************************************************
+% Back matter
+% ********************************************************************
+$if(has-frontmatter)$
+\backmatter
+$endif$
+
+% --------------------------------------------------------------------
+% Acronyms
+% --------------------------------------------------------------------
+
+\cleardoublepage
+% TODO -- acronyms
+
+% --------------------------------------------------------------------
+% Glossary
+% --------------------------------------------------------------------
+
+\cleardoublepage
+% TODO -- glossary
+
+% --------------------------------------------------------------------
+% Bibliography
+% --------------------------------------------------------------------
+
+\cleardoublepage
+
+$if(natbib)$
+$if(bibliography)$
+$if(biblio-title)$
+$if(has-chapters)$
+\renewcommand\bibname{$biblio-title$}
+$else$
+\renewcommand\refname{$biblio-title$}
+$endif$
+$endif$
+
+  \bibliography{$for(bibliography)$$bibliography$$sep$,$endfor$}
+
+
+$endif$
+$endif$
+$if(biblatex)$
+
+\printbibliography$if(biblio-title)$[title=$biblio-title$]$endif$
+
+$endif$
+
+% --------------------------------------------------------------------
+% Index
+% --------------------------------------------------------------------
+
+\cleardoublepage
+% TODO -- index
+
+% ********************************************************************
+% End document
+% ********************************************************************
+\end{document}
+
+% ********************************************************************
+% ********************************************************************
