@@ -286,11 +286,16 @@ $if(graphics)$
 \makeatother
 $endif$
 
-% TODO -- what does this do?
-% $if(strikeout)$
-% $-- also used for underline
-% \usepackage[normalem]{ulem}
-% $endif$
+% Strikeout, underline and crossout support
+\usepackage[normalem]{ulem}
+% Redefine \st to use a thin, elegant strikeout
+\renewcommand{\st}[1]{%
+  \bgroup
+    \ULdepth=-.5ex % vertical position of the line
+    \ULthickness=0.1ex % thin rule for Classic Thesis aesthetic
+    \sout{#1}%
+  \egroup
+}
 
 \setlength{\emergencystretch}{3em} % prevent overfull lines
 \providecommand{\tightlist}{%
