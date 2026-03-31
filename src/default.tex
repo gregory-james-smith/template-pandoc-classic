@@ -133,17 +133,27 @@ $endif$
 %   \setmainfont[$for(mainfontoptions)$$mainfontoptions$$sep$,$endfor$]{$mainfont$}
 % $endif$
 
+% Fallback for Greek, Cyrillic, Georgian
 \directlua{
-  luaotfload.add_fallback("noto_fallback", {
-    "Noto Serif:mode=harf"
+  luaotfload.add_fallback("free_fallback", {
+    "FreeSerif:mode=harf"
   })
 }
 
+% Main EB Garamond font (bundled)
 \setmainfont[
+  Path=fonts/EBGaramond/,
+  UprightFont=*-Regular,
+  ItalicFont=*-Italic,
+  BoldFont=*-Bold,
+  BoldItalicFont=*-BoldItalic,
+  RawFeature={fallback=free_fallback},
   Ligatures=TeX,
-  Scale=1,
-  RawFeature={fallback=noto_fallback}
-]{EB Garamond 12}
+  Scale=1
+]{EBGaramond}
+
+% Math font (from TeX Live)
+\setmathfont{EB Garamond Math}
 
 \setmathfont{EB Garamond Math}
 
