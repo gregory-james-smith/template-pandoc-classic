@@ -133,11 +133,19 @@ $endif$
 %   \setmainfont[$for(mainfontoptions)$$mainfontoptions$$sep$,$endfor$]{$mainfont$}
 % $endif$
 
+\directlua{
+  luaotfload.add_fallback("noto_fallback", {
+    "Noto Serif:mode=harf"
+  })
+}
+
 \setmainfont[
   Ligatures=TeX,
   Scale=1,
-  RawFeature={fallback=Noto Serif}
+  RawFeature={fallback=noto_fallback}
 ]{EB Garamond}
+
+\setmathfont{EB Garamond Math}
 
 $if(sansfont)$
   \setsansfont[$for(sansfontoptions)$$sansfontoptions$$sep$,$endfor$]{$sansfont$}
