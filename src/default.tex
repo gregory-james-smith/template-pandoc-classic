@@ -1,6 +1,20 @@
 % Options for packages loaded elsewhere
 \PassOptionsToPackage{unicode$for(hyperrefoptions)$,$hyperrefoptions$$endfor$}{hyperref}
 \PassOptionsToPackage{hyphens}{url}
+
+
+% Strikeout, underline and crossout support
+\usepackage[normalem]{ulem}
+% Redefine \st to use a thin, elegant strikeout
+\renewcommand{\st}[1]{%
+  \bgroup
+    \ULdepth=-.5ex % vertical position of the line
+    \ULthickness=0.1ex % thin rule for Classic Thesis aesthetic
+    \sout{#1}%
+  \egroup
+}
+
+
 $if(colorlinks)$
 \PassOptionsToPackage{dvipsnames,svgnames,x11names}{xcolor}
 $endif$
@@ -285,17 +299,6 @@ $if(graphics)$
 \def\fps@figure{htbp}
 \makeatother
 $endif$
-
-% Strikeout, underline and crossout support
-\usepackage[normalem]{ulem}
-% Redefine \st to use a thin, elegant strikeout
-\renewcommand{\st}[1]{%
-  \bgroup
-    \ULdepth=-.5ex % vertical position of the line
-    \ULthickness=0.1ex % thin rule for Classic Thesis aesthetic
-    \sout{#1}%
-  \egroup
-}
 
 \setlength{\emergencystretch}{3em} % prevent overfull lines
 \providecommand{\tightlist}{%
