@@ -2,19 +2,6 @@
 \PassOptionsToPackage{unicode$for(hyperrefoptions)$,$hyperrefoptions$$endfor$}{hyperref}
 \PassOptionsToPackage{hyphens}{url}
 
-
-% Strikeout, underline and crossout support
-\usepackage[normalem]{ulem}
-% Redefine \st to use a thin, elegant strikeout
-\renewcommand{\st}[1]{%
-  \bgroup
-    \ULdepth=-.5ex % vertical position of the line
-    \ULthickness=0.1ex % thin rule for Classic Thesis aesthetic
-    \sout{#1}%
-  \egroup
-}
-
-
 $if(colorlinks)$
 \PassOptionsToPackage{dvipsnames,svgnames,x11names}{xcolor}
 $endif$
@@ -46,6 +33,18 @@ $endif$
   % Other options
   numbers=noenddot,% No dots after chapter or section numbers
 ]{scrbook}
+
+
+% Strikeout, underline and crossout support
+\usepackage[normalem]{ulem}
+% Redefine \st to use a thin, elegant strikeout
+\renewcommand{\st}[1]{%
+  \bgroup
+    \ULdepth=-.5ex % vertical position of the line
+    \ULthickness=0.1ex % thin rule for Classic Thesis aesthetic
+    \sout{#1}%
+  \egroup
+}
 
 % ********************************************************************
 % Geometry
