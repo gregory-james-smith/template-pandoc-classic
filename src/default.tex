@@ -1,15 +1,7 @@
-\typeout{ENGINE: \directlua{tex.print("LuaLaTeX")} }
-
 % Options for packages loaded elsewhere
-\PassOptionsToPackage{unicode$for(hyperrefoptions)$,$hyperrefoptions$$endfor$}{hyperref}
+\PassOptionsToPackage{unicode}{hyperref}
 \PassOptionsToPackage{hyphens}{url}
-
-$if(colorlinks)$
 \PassOptionsToPackage{dvipsnames,svgnames,x11names}{xcolor}
-$endif$
-$if(CJKmainfont)$
-\PassOptionsToPackage{space}{xeCJK}
-$endif$
 
 % ********************************************************************
 % Document class
@@ -91,124 +83,26 @@ $endif$
 % ********************************************************************
 
 \usepackage{amsmath,amssymb}
-
-$if(fontfamily)$
-\usepackage[$for(fontfamilyoptions)$$fontfamilyoptions$$sep$,$endfor$]{$fontfamily$}
-$else$
-\usepackage{lmodern}
-$endif$
-
-$if(linestretch)$
 \usepackage{setspace}
-$endif$
-
 \usepackage{iftex}
 
 % --------------------------------------------------------------------
 % Font settings
 % --------------------------------------------------------------------
-% TODO -- organise and simplify
-% --------------------------------------------------------------------
-
-\ifPDFTeX
-  \usepackage[T1]{fontenc}
-  \usepackage[utf8]{inputenc}
-  \usepackage{textcomp} % provide euro and other symbols
-\else % if luatex or xetex
-
-$if(mathspec)$
-  \ifXeTeX
-    \usepackage{mathspec}
-  \else
-    \usepackage{unicode-math}
-  \fi
-$else$
-  \usepackage{unicode-math}
-$endif$
 
 \defaultfontfeatures{Scale=MatchLowercase}
 \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
 
-% $if(mainfont)$
-%   \setmainfont[$for(mainfontoptions)$$mainfontoptions$$sep$,$endfor$]{$mainfont$}
-% $endif$
+% Palatino as main text font
+\usepackage{fontspec}
+\setmainfont{Palatino}
 
-% Fallback for Greek, Cyrillic, Georgian
-\directlua{
-  luaotfload.add_fallback("free_fallback", {
-    "FreeSerif:mode=harf"
-  })
-}
+% EB Garamond Math as math font
+\usepackage{unicode-math}
+\setmathfont{Garamond-Math}
 
-% Main EB Garamond font (bundled)
-\setmainfont[
-  Path=fonts/EBGaramond/,
-  UprightFont=*-Regular,
-  ItalicFont=*-Italic,
-  BoldFont=*-Bold,
-  BoldItalicFont=*-BoldItalic,
-  RawFeature={fallback=free_fallback},
-  Ligatures=TeX,
-  Scale=1
-]{EBGaramond}
-
-% Math font (from TeX Live)
-\setmathfont{EB Garamond Math}
-
-\setmathfont{EB Garamond Math}
-
-$if(sansfont)$
-  \setsansfont[$for(sansfontoptions)$$sansfontoptions$$sep$,$endfor$]{$sansfont$}
-$endif$
-
-$if(monofont)$
-  \setmonofont[$for(monofontoptions)$$monofontoptions$$sep$,$endfor$]{$monofont$}
-$endif$
-
-$for(fontfamilies)$
-  \newfontfamily{$fontfamilies.name$}[$for(fontfamilies.options)$$fontfamilies.options$$sep$,$endfor$]{$fontfamilies.font$}
-$endfor$
-
-$if(mathfont)$
-$if(mathspec)$
-  \ifXeTeX
-    \setmathfont(Digits,Latin,Greek)[$for(mathfontoptions)$$mathfontoptions$$sep$,$endfor$]{$mathfont$}
-  \else
-    \setmathfont[$for(mathfontoptions)$$mathfontoptions$$sep$,$endfor$]{$mathfont$}
-  \fi
-$else$
-  \setmathfont[$for(mathfontoptions)$$mathfontoptions$$sep$,$endfor$]{$mathfont$}
-$endif$
-$endif$
-
-$if(CJKmainfont)$
-  \ifXeTeX
-    \usepackage{xeCJK}
-    \setCJKmainfont[$for(CJKoptions)$$CJKoptions$$sep$,$endfor$]{$CJKmainfont$}
-  \fi
-$endif$
-
-$if(luatexjapresetoptions)$
-  \ifLuaTeX
-    \usepackage[$for(luatexjapresetoptions)$$luatexjapresetoptions$$sep$,$endfor$]{luatexja-preset}
-  \fi
-$endif$
-
-$if(CJKmainfont)$
-  \ifLuaTeX
-    \usepackage[$for(luatexjafontspecoptions)$$luatexjafontspecoptions$$sep$,$endfor$]{luatexja-fontspec}
-    \setmainjfont[$for(CJKoptions)$$CJKoptions$$sep$,$endfor$]{$CJKmainfont$}
-  \fi
-$endif$
-
-\fi
-
-% --------------------------------------------------------------------
-% EB Garamond
-% --------------------------------------------------------------------
-% TODO -- better to use setmainfont...
-\usepackage{ebgaramond}
-\usepackage{ebgaramond-maths}
+% Optional: better Palatino small caps & oldstyle numerals
+\defaultfontfeatures{Ligatures=TeX, Numbers=OldStyle}
 
 % --------------------------------------------------------------------
 % Zero-width non-joiner characters
