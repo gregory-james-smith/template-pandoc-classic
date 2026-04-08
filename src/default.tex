@@ -100,6 +100,21 @@
 % EB Garamond Math as math font
 \usepackage{unicode-math}
 \setmathfont{Garamond-Math}
+% Selectively replace math font with ranges
+% \setmathfont{Latin Modern Math}[range={up, it, bfup, bfit}, Scale=MatchLowercase]
+
+% Fallback chain for Greek, Cyrillic, IPA, symbols
+\directlua{
+  luaotfload.add_fallback("global_fallback", {
+    "FreeSerif:mode=harf",          -- Greek, Cyrillic, IPA, extended Latin
+    "Symbola:mode=harf",            -- Misc symbols, arrows, dingbats
+    "Noto Sans Symbols:mode=harf",  -- Emoji, rare Unicode blocks
+    "Noto Sans Symbols2:mode=harf"  -- Supplemental symbols
+  })
+}
+
+% Apply fallback to all fonts
+\defaultfontfeatures{RawFeature={fallback=global_fallback}}
 
 % Optional: better Palatino small caps & oldstyle numerals
 \defaultfontfeatures{Ligatures=TeX, Numbers=OldStyle}
