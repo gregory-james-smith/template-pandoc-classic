@@ -24,15 +24,26 @@
 \setsansfont{TeX Gyre Heros}
 \setmonofont{TeX Gyre Cursor}
 
-% ------------------------------------------------------------
-% Page layout
-% ------------------------------------------------------------
+% ********************************************************************
+% Geometry
+% ********************************************************************
 \usepackage{geometry}
 \geometry{
   paper=a4paper,
   margin=25mm,
   headheight=14pt
 }
+
+% --------------------------------------------------------------------
+% centertextmargins
+% --------------------------------------------------------------------
+% Environment for setting margins evenly on a single page so that the
+% left and right margins are equal, without affecting the top and
+% bottom margins, and maintaining the text area width.
+% --------------------------------------------------------------------
+\newenvironment{centertextmargins}
+    {\newgeometry{left=0.2\paperwidth, right=0.2\paperwidth, top=2.5cm, bottom=3.5cm}}
+    {\restoregeometry}
 
 % ------------------------------------------------------------
 % Microtypography
@@ -78,31 +89,34 @@
 % See page 493 KOMA manual
 % --------------------------------------------------------------------
 
+% Typography
+\setkomafont{part}{\scshape\Large}
+\setkomafont{partprefix}{\Large}
+
+% Spacing
 \RedeclareSectionCommand[
-  innerskip=11pt,
-  font=\scshape\Large,
-  prefixfont=\Large,
+  innerskip=11pt
 ]{part}
 
 % TODO -- sort out spacing and kerning for MakeUppercase
-% TODO -- abstract Maroon colour
 
+% Prefix + title formatting
 \renewcommand*{\partlineswithprefixformat}[3]{%
-  \parbox{.75\linewidth}{\raggedpart #2}%
-  \par%
-  \parbox{.75\linewidth}{\raggedpart \color{Maroon} \MakeUppercase{#3}}%
-  \par%
+  \centering
+  \parbox{.75\linewidth}{\raggedpart #2\par}%
+  \par
+  \parbox{.75\linewidth}{\raggedpart \color{Maroon}\MakeUppercase{#3}\par}%
 }
 
-\renewcommand*\raggedpart{\centering}
+\AddToHook{cmd/part/before}{\begin{centertextmargins}}
+\AddToHook{cmd/part/after}{\end{centertextmargins}}
 
-% TODO -- can this be done with a pagestyle in RedeclareSectionCommand
-\NewCommandCopy{\oldpart}{\part}
-\renewcommand{\part}[1]{
-  \begin{centertextmargins}
-    \oldpart{#1}
-  \end{centertextmargins}
+% Page style for part pages
+\newpagestyle{partstyle}{
+  \sethead{}{}{}
+  \setfoot{}{}{}
 }
+\renewcommand*\partpagestyle{partstyle}
 
 % ------------------------------------------------------------
 % Pandoc inserts its own packages here
