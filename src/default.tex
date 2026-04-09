@@ -53,6 +53,57 @@
 % Formatting for URLs
 \urlstyle{same}
 
+% ********************************************************************
+% Headings and heading pages
+% ********************************************************************
+
+% Heading numbering
+\setcounter{secnumdepth}{2}
+
+% Heading font
+\setkomafont{disposition}{\rmfamily}
+
+% --------------------------------------------------------------------
+% Part
+% --------------------------------------------------------------------
+% Renew part command to handle different implementations of part command
+% 
+% \part{title}
+% \part*{title}
+% \part[toc-title]{title} % toc-title set to title if missing
+% 
+% https://tex.stackexchange.com/questions/4386/defining-starred-versions-of-commands-macro
+% https://tex.stackexchange.com/questions/47351/can-i-redefine-a-command-to-contain-itself
+% 
+% See page 493 KOMA manual
+% --------------------------------------------------------------------
+
+\RedeclareSectionCommand[
+  innerskip=11pt,
+  font=\scshape\Large,
+  prefixfont=\Large,
+]{part}
+
+% TODO -- sort out spacing and kerning for MakeUppercase
+% TODO -- abstract Maroon colour
+
+\renewcommand*{\partlineswithprefixformat}[3]{%
+  \parbox{.75\linewidth}{\raggedpart #2}%
+  \par%
+  \parbox{.75\linewidth}{\raggedpart \color{Maroon} \MakeUppercase{#3}}%
+  \par%
+}
+
+\renewcommand*\raggedpart{\centering}
+
+% TODO -- can this be done with a pagestyle in RedeclareSectionCommand
+\NewCommandCopy{\oldpart}{\part}
+\renewcommand{\part}[1]{
+  \begin{centertextmargins}
+    \oldpart{#1}
+  \end{centertextmargins}
+}
+
 % ------------------------------------------------------------
 % Pandoc inserts its own packages here
 % ------------------------------------------------------------
