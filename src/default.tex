@@ -108,15 +108,12 @@
   \parbox{.75\linewidth}{\raggedpart \color{Maroon}\MakeUppercase{#3}\par}%
 }
 
-\AddToHook{cmd/part/before}{\begin{centertextmargins}}
-\AddToHook{cmd/part/after}{\end{centertextmargins}}
-
-% Page style for part pages
-\newpagestyle{partstyle}{
+\AddToHook{cmd/part/before}{
   \sethead{}{}{}
   \setfoot{}{}{}
+  \begin{centertextmargins}
 }
-\renewcommand*\partpagestyle{partstyle}
+\AddToHook{cmd/part/after}{\end{centertextmargins}}
 
 % ------------------------------------------------------------
 % Pandoc inserts its own packages here
